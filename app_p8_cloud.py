@@ -6,6 +6,10 @@ from PIL import Image
 import io
 import matplotlib.pyplot as plt
 
+# Assurer que l'application se lie correctement au port Heroku
+port = os.getenv('PORT', 8501)  # Utiliser 8501 en local si Heroku ne fournit pas le PORT
+st.set_option('server.port', port)
+
 # Fonction pour encoder l'image en base64
 def image_to_base64(image):
     with io.BytesIO() as img_byte_array:
@@ -14,7 +18,7 @@ def image_to_base64(image):
 
 # Fonction pour envoyer l'image à l'API déployée sur Heroku et obtenir la réponse
 def get_segmented_image(image_base64):
-    url = 'https://app8oc-1fbc73130596.herokuapp.com/predict'  # L'URL de ton API Heroku
+    url = os.getenv('API_URL', 'https://app8oc-1fbc73130596.herokuapp.com/predict')  # URL API
     headers = {'Content-Type': 'application/json'}
     data = {'image': image_base64}
     
@@ -64,31 +68,34 @@ if os.path.exists(image_path) and os.path.exists(mask_path):
     if st.button('Lancer la prédiction'):
         # Convertir l'image réelle en base64 et obtenir le masque prédit depuis l'API
         image_base64 = image_to_base64(real_image)
-        segmented_image_base64 = get_segmented_image(image_base64)
+        try:
+            segmented_image_base64 = get_segmented_image(image_base64)
 
-        # Décoder le masque prédit
-        segmented_image = base64_to_image(segmented_image_base64)
+            # Décoder le masque prédit
+            segmented_image = base64_to_image(segmented_image_base64)
 
-        # Afficher l'image réelle, le mask réel et le mask prédit côte à côte
-        fig, axes = plt.subplots(1, 3, figsize=(18, 6))  # Créer un graphique avec 3 sous-graphes (côte à côte)
+            # Afficher l'image réelle, le mask réel et le mask prédit côte à côte
+            fig, axes = plt.subplots(1, 3, figsize=(18, 6))  # Créer un graphique avec 3 sous-graphes (côte à côte)
 
-        # Afficher l'image réelle
-        axes[0].imshow(real_image)
-        axes[0].set_title("Image Réelle")
-        axes[0].axis('off')  # Masquer les axes
+            # Afficher l'image réelle
+            axes[0].imshow(real_image)
+            axes[0].set_title("Image Réelle")
+            axes[0].axis('off')  # Masquer les axes
 
-        # Afficher le mask réel
-        axes[1].imshow(real_mask)
-        axes[1].set_title("Mask Réel")
-        axes[1].axis('off')  # Masquer les axes
+            # Afficher le mask réel
+            axes[1].imshow(real_mask)
+            axes[1].set_title("Mask Réel")
+            axes[1].axis('off')  # Masquer les axes
 
-        # Afficher le mask prédit
-        axes[2].imshow(segmented_image)
-        axes[2].set_title("Mask Prédit")
-        axes[2].axis('off')  # Masquer les axes
+            # Afficher le mask prédit
+            axes[2].imshow(segmented_image)
+            axes[2].set_title("Mask Prédit")
+            axes[2].axis('off')  # Masquer les axes
 
-        # Afficher le graphique
-        plt.tight_layout()
-        st.pyplot(fig)
+            # Afficher le graphique
+            plt.tight_layout()
+            st.pyplot(fig)
+        except Exception as e:
+            st.error(f"Erreur lors de la prédiction: {str(e)}")
 else:
     st.error("Le fichier d'image ou de mask n'existe pas pour l'ID sélectionné.")
