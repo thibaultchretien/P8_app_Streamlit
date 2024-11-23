@@ -7,7 +7,7 @@ import io
 import matplotlib.pyplot as plt
 
 # Assurer que l'application se lie correctement au port Heroku
-port = os.getenv('PORT', 8501)  # Utiliser 8501 en local si Heroku ne fournit pas le PORT
+port = os.getenv('PORT', 8555)  # Utiliser 8501 en local si Heroku ne fournit pas le PORT
 st.set_option('server.port', port)
 
 # Fonction pour encoder l'image en base64
