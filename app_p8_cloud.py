@@ -6,6 +6,11 @@ from PIL import Image
 import io
 import matplotlib.pyplot as plt
 
+# Utilisez le port défini par Heroku
+port = int(os.environ.get("PORT", 8501))
+st.run(port=port)
+
+
 # Fonction pour encoder l'image en base64
 def image_to_base64(image):
     with io.BytesIO() as img_byte_array:
