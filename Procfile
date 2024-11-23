@@ -1,1 +1,1 @@
-web: streamlit run test_app_8.py
+web: streamlit run app_p8_cloud.py
