@@ -30,9 +30,10 @@ def base64_to_image(base64_str):
     image_data = base64.b64decode(base64_str)
     return Image.open(io.BytesIO(image_data))
 
-# Récupérer la liste des fichiers d'image et de mask dans les dossiers test_images et test_masks
-image_dir = 'test_images'
-mask_dir = 'test_masks'
+# Répertoires contenant les images et masques
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Assure l'accès au bon chemin
+image_dir = os.path.join(BASE_DIR, 'test_images')
+mask_dir = os.path.join(BASE_DIR, 'test_masks')
 
 # Récupérer la liste des fichiers image et mask
 image_files = sorted([f for f in os.listdir(image_dir) if f.endswith('.png')])
